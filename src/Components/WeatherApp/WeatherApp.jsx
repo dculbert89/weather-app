@@ -11,33 +11,33 @@ import humidity_icon from "../Assets/humidity.png";
 import wind_icon from "../Assets/wind.png";
 
 export const WeatherApp = () => {
-  const [wicon, setWicon] = useState(cloud_icon);
-  const [weatherData, setWeatherData] = useState({
-    humidity: "--",
-    windSpeed: "--",
-    temperature: "--",
-    location: "Location?",
-  });
-
-  const api_key = "170d0bcc82fe12817e59381bd5cb3e87";
-
-  const getWeatherData = async (url) => {
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-      const weather = {
-        humidity: data.main.humidity + " %",
-        windSpeed: Math.floor(data.wind.speed) + " mph",
-        temperature: Math.floor(data.main.temp) + "°F",
-        location: data.name,
-      };
-
-      setWeatherData(weather);
-      updateWeatherIcon(data.weather[0].icon);
-    } catch (error) {
-      console.error("Error fetching weather data:", error);
-    }
-  };
+    const [wicon, setWicon] = useState(cloud_icon);
+    const [weatherData, setWeatherData] = useState({
+      humidity: "--",
+      windSpeed: "--",
+      temperature: "--",
+      location: "Location?",
+    });
+  
+    const api_key = "170d0bcc82fe12817e59381bd5cb3e87";
+  
+    const getWeatherData = async (url) => {
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        const weather = {
+          humidity: data.main.humidity + " %",
+          windSpeed: Math.floor(data.wind.speed) + " mph",
+          temperature: Math.floor(data.main.temp) + "°F",
+          location: data.name,
+        };
+  
+        setWeatherData(weather);
+        updateWeatherIcon(data.weather[0].icon);
+      } catch (error) {
+        console.error("Error fetching weather data:", error);
+      }
+    };
 
   const updateWeatherIcon = (iconCode) => {
     switch (iconCode) {
@@ -91,15 +91,28 @@ export const WeatherApp = () => {
     }
   };
 
-  useEffect(() => {
+  const askForGeolocationPermission = () => {
     if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-        const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&units=imperial&appid=${api_key}`;
-        getWeatherData(url);
-      });
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&units=imperial&appid=${api_key}`;
+          getWeatherData(url);
+        },
+        (error) => {
+          console.error("Error getting geolocation:", error);
+        }
+      );
+    } else {
+      console.error("Geolocation is not available in this browser.");
     }
+  };
+
+  useEffect(() => {
+    // Ask for geolocation permission when the component mounts
+    askForGeolocationPermission();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
