@@ -11,6 +11,8 @@
     justify-content: center;
     gap: 14px;
     padding-top: 20px;
+    /* margin-left: 5px;
+    margin-right: 5px; */
 }
 
 .top-bar input {
@@ -23,14 +25,15 @@
     color: #626262;
     font-size: 20px;
     font-weight: 400;
+    width: 40%;
 }
 
 .search-icon {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 78px;
-    height: 78px;
+    width: 65px;
+    height: 65px;
     background: #ebfffc;
     border-radius: 40px;
     cursor: pointer;
